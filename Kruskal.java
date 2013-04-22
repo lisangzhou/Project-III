@@ -1,6 +1,5 @@
 /* Kruskal.java */
 
-import java.util.Hashtable;
 import graph.*;
 import set.*;
 

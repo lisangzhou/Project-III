@@ -1,6 +1,6 @@
                                CS 61B  Project 3
              Weighted Undirected Graphs and Minimum Spanning Trees
-                        Due 2pm Friday, April 27, 2012
+                        Due 5:30 pm Friday, May 3, 2013
 
 This is a team project.  Form a team of 2 or 3 people.  No teams of 1 or teams
 of 4 or more are allowed.
@@ -152,7 +152,8 @@ Here are some of the design elements that will help achieve these goals.
      need to maintain counts of the vertices, the edges, and the degree of each
      vertex, and keep these counts updated with every operation.
 
-My own Part I solution is 350 lines long, not counting the hash table code.
+For those of you who are keeping score, my own Part I solution is 350 lines
+long, not counting the hash table code.
 
 Interfaces
 ----------
@@ -161,9 +162,11 @@ WUGraph.java.  We will test that your WUGraph class correctly implements the
 interface we have specified.
 
 Neighbors.java is a class provided so the method WUGraph.getNeighbors() can
-return two arrays at once.  We do not recommend using the Neighbors class for
-any other purpose.  The reason you cannot change it is because it is part of
-the interface of getNeighbors().  It appears as follows:
+return two arrays at once.  That is its only purpose.  It is not appropriate to
+use the Neighbors class for any other purpose.  You CANNOT change it, because
+it is part of the interface of getNeighbors(), and calling programs (including
+the autograder) are relying on you to return Neighbors objects according to
+spec.  It appears as follows:
 
   public class Neighbors {
     public Object[] neighborList;
