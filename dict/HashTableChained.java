@@ -105,8 +105,6 @@ public class HashTableChained implements Dictionary {
     return positiveMod(positiveMod(37 * code + 5, hugePrime), dataStore.length);
   }
 
-
-
   /**
    * positiveMod returns a positive mod value for x % y
   **/
@@ -158,12 +156,29 @@ public class HashTableChained implements Dictionary {
   public Entry insert(Object key, Object value) {
     // Replace the following line with your solution.
 
-    // calculate the load factor to determine whehter resize is needed
-    double loadFactor = ((double) size + 1) / dataStore.length;
-    if(loadFactor > 1){
-      resize(size * 2);
+    // determine whether the table needs to be resized
+    if(size >= dataStore.length){
+      try{
+        DList[] temporary = new DList[nearestPrime(dataStore.length * 2)];
+        int newHugePrime = nearestPrime(30 * 2 * dataStore.length);
+        for(int j = 0; j < temporary.length; j++){
+          temporary[j] = new DList();
+        }
+
+        for(int i = 0; i < dataStore.length; i++){
+          DListNode currentNode = (DListNode) dataStore[i].front();
+          while(currentNode != null){
+            // put entry in new location
+            Object currentKey = ((Entry) currentNode.item()).key();
+            int targetIndex = positiveMod(positiveMod(37 * key.hashCode() + 5, newHugePrime), temporary.length);
+            temporary[targetIndex].insertBack(currentNode.item());
+            currentNode = (DListNode) currentNode.next();
+          }
+        }
+        dataStore = temporary;
+        hugePrime = newHugePrime;
+      } catch(InvalidNodeException error){}
     }
-    
     Entry hashEntry = new Entry();
     hashEntry.key = key;
     hashEntry.value = value;
@@ -174,28 +189,6 @@ public class HashTableChained implements Dictionary {
     return hashEntry;
   }
 
-  private void resize(int nearestSize){
-
-    // keep a pointer to the old array
-    try{
-    DList[] oldTable = dataStore;
-
-    // replace all the instance variables
-      dataStore = new DList[nearestPrime(nearestSize * 2)];
-      hugePrime = nearestPrime(nearestSize * 30);
-      size = 0;
-
-      // rehash everything that was in the table
-      for(int i = 0; i < oldTable.length; i++){
-        DListNode currentNode = (DListNode) oldTable[i].front();
-        while(currentNode != null){
-          Entry currentEntry = (Entry) currentNode.item();
-          insert(currentEntry.key(),currentEntry.value);
-          currentNode = (DListNode) currentNode.next();
-        }
-      }
-    } catch(InvalidNodeException error){}
-  }
 
   /** 
    *  Search for an entry with the specified key.  If such an entry is found,
@@ -280,26 +273,6 @@ public class HashTableChained implements Dictionary {
       dataStore[i] = new DList();
     }
     size = 0;
-  }
-
-
-  public static void main(String[] args){
-    HashTableChained test = new HashTableChained(10);
-    for(int i = 0; i < 9; i++){
-      Integer dummyValue = new Integer(i);
-      test.insert(dummyValue,dummyValue);
-    }
-
-    // fill it up even more
-    for(int j = 10; j < 20; j++){
-      Integer dummyValue = new Integer(j);
-      test.insert(dummyValue,dummyValue);
-    }
-
-    for(int k = 0; k < 20; k++){
-
-      System.out.println(test.find(new Integer(k)).value());
-    }
   }
 
 }
