@@ -177,23 +177,24 @@ public class HashTableChained implements Dictionary {
   private void resize(int nearestSize){
 
     // keep a pointer to the old array
-    DList oldTable = dataStore;
+    try{
+    DList[] oldTable = dataStore;
 
     // replace all the instance variables
-    dataStore = new DList[nearestPrime(nearestSize * 2)];
-    hugePrime = nearestPrime(nearestSize * 30);
-    size = 0;
+      dataStore = new DList[nearestPrime(nearestSize * 2)];
+      hugePrime = nearestPrime(nearestSize * 30);
+      size = 0;
 
-    // rehash everything that was in the table
-    for(int i = 0; i < oldTable.length; i++){
-      DList currentBucket = oldTable[i];
-      DListNode currentNode = currentBucket.front();
-      while(currentNode != null){
-        Entry currentEntry = (Entry) currentNode.item();
-        insert(currentEntry.key(),currentEntry.value);
-        currentNode = currentBucket.next(currentNode);
+      // rehash everything that was in the table
+      for(int i = 0; i < oldTable.length; i++){
+        DListNode currentNode = (DListNode) oldTable[i].front();
+        while(currentNode != null){
+          Entry currentEntry = (Entry) currentNode.item();
+          insert(currentEntry.key(),currentEntry.value);
+          currentNode = (DListNode) currentNode.next();
+        }
       }
-    }
+    } catch(InvalidNodeException error){}
   }
 
   /** 
@@ -279,6 +280,26 @@ public class HashTableChained implements Dictionary {
       dataStore[i] = new DList();
     }
     size = 0;
+  }
+
+
+  public static void main(String[] args){
+    HashTableChained test = new HashTableChained(10);
+    for(int i = 0; i < 9; i++){
+      Integer dummyValue = new Integer(i);
+      test.insert(dummyValue,dummyValue);
+    }
+
+    // fill it up even more
+    for(int j = 10; j < 20; j++){
+      Integer dummyValue = new Integer(j);
+      test.insert(dummyValue,dummyValue);
+    }
+
+    for(int k = 0; k < 20; k++){
+
+      System.out.println(test.find(new Integer(k)).value());
+    }
   }
 
 }
