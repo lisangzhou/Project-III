@@ -2,6 +2,9 @@
 
 package graph;
 
+import list.*;
+import dict.*;
+
 /**
  * The WUGraph class represents a weighted, undirected graph.  Self-edges are
  * permitted.
@@ -9,7 +12,7 @@ package graph;
 
 public class WUGraph {
   
-    HashTable verticesTable; 
+    HashTableChained verticesTable; 
     DList verticesList;
     HashTable edges;
     int vertexCount;
@@ -21,10 +24,10 @@ public class WUGraph {
    * Running time:  O(1).
    */
   public WUGraph(){
-    verticesTable=new HashTable();
+    verticesTable=new HashTableChained();
     verticesList=new DList();
-    edgeCount=0;
-    vertexCount=0;
+    edgeCount = 0;
+    vertexCount = 0;
   }
 
   /**
@@ -57,7 +60,17 @@ public class WUGraph {
    *
    * Running time:  O(|V|).
    */
-  public Object[] getVertices();
+  public Object[] getVertices(){
+    Object[] result = new Object[vertexCount];
+    try{
+      DListNode currentNode = (DListNode) verticesList.front();
+      for(int i = 0; i < verticesList.length(); i++){
+        Object[i] = currentNode.item();
+        currentNode = (DListNode) currentNode.next();
+      }
+    } catch(InvalidNodeException error){}
+    return result;
+  }
 
   /**
    * addVertex() adds a vertex (with no incident edges) to the graph.  The

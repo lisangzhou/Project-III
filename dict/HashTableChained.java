@@ -167,7 +167,7 @@ public class HashTableChained implements Dictionary {
 
         for(int i = 0; i < dataStore.length; i++){
           DListNode currentNode = (DListNode) dataStore[i].front();
-          while(currentNode != null){
+          for(int j = 0; j < dataStore[i].length(); j++){
             // put entry in new location
             Object currentKey = ((Entry) currentNode.item()).key();
             int targetIndex = positiveMod(positiveMod(37 * key.hashCode() + 5, newHugePrime), temporary.length);
