@@ -12,9 +12,13 @@ import dict.*;
 
 public class WUGraph {
   
+<<<<<<< HEAD
     HashTableChained verticesTable; 
+=======
+    HashTableChained adjacencyList;
+    HashTableChained edges;
+>>>>>>> adding getVertices()
     DList verticesList;
-    HashTable edges;
     int vertexCount;
     int edgeCount;
 
@@ -24,7 +28,12 @@ public class WUGraph {
    * Running time:  O(1).
    */
   public WUGraph(){
+<<<<<<< HEAD
     verticesTable=new HashTableChained();
+=======
+    adjacencyList=new HashTableChained();
+    edges=new HashTableChained();
+>>>>>>> adding getVertices()
     verticesList=new DList();
     edgeCount = 0;
     vertexCount = 0;
@@ -60,6 +69,7 @@ public class WUGraph {
    *
    * Running time:  O(|V|).
    */
+<<<<<<< HEAD
   public Object[] getVertices(){
     Object[] result = new Object[vertexCount];
     try{
@@ -71,6 +81,24 @@ public class WUGraph {
     } catch(InvalidNodeException error){}
     return result;
   }
+=======
+    public Object[] getVertices(){
+        int[] vertices=new int[vertexCount];
+        int track=0;
+        try{
+            DListNode current=verticesList.front();
+            while(current.isValidNode()){
+                vertices[track]=current.item();
+                current=current.next();
+            track++;
+            }// end while
+        }catch(InvalidNodeException e){
+            System.out.println("there is a poblem with getting vertices!"+ e);
+        }
+        
+        return vertices;
+    }
+>>>>>>> adding getVertices()
 
   /**
    * addVertex() adds a vertex (with no incident edges) to the graph.  The
@@ -79,7 +107,10 @@ public class WUGraph {
    *
    * Running time:  O(1).
    */
-  public void addVertex(Object vertex);
+    public void addVertex(Object vertex){
+        
+    
+    }
 
   /**
    * removeVertex() removes a vertex from the graph.  All edges incident on the

@@ -9,4 +9,6 @@ public class Edge{
     secondAdjacencyNode = second;
     weight = edgeWeight;
   }
+    
+    
 }  
