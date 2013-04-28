@@ -1,197 +1,278 @@
-/* WUGraph.java */
+/* HashTableChained.java */
 
-package graph;
-
+package dict;
 import list.*;
-import dict.*;
-
 /**
- * The WUGraph class represents a weighted, undirected graph.  Self-edges are
- * permitted.
- */
+ *  HashTableChained implements a Dictionary as a hash table with chaining.
+ *  All objects used as keys must have a valid hashCode() method, which is
+ *  used to determine which bucket of the hash table an entry is stored in.
+ *  Each object's hashCode() is presumed to return an int between
+ *  Integer.MIN_VALUE and Integer.MAX_VALUE.  The HashTableChained class
+ *  implements only the compression function, which maps the hash code to
+ *  a bucket in the table's range.
+ *
+ *  DO NOT CHANGE ANY PROTOTYPES IN THIS FILE.
+ **/
 
-public class WUGraph {
-    
-    HashTableChained verticesTable;
-    DList verticesList;
-    HashTableChained edges;
-    int vertexCount;
-    int edgeCount;
-    
-    /**
-     * WUGraph() constructs a graph having no vertices or edges.
-     *
-     * Running time:  O(1).
-     */
-    public WUGraph(){
-        verticesTable=new HashTableChained();
-        verticesList=new DList();
-        edgeCount = 0;
-        vertexCount = 0;
-    }
-    
-    /**
-     * vertexCount() returns the number of vertices in the graph.
-     *
-     * Running time:  O(1).
-     */
-    public int vertexCount(){
-        return vertexCount;
-    }
-    
-    /**
-     * edgeCount() returns the number of edges in the graph.
-     *
-     * Running time:  O(1).
-     */
-    public int edgeCount(){
-        return edgeCount;
-    }
-    
-    /**
-     * getVertices() returns an array containing all the objects that serve
-     * as vertices of the graph.  The array's length is exactly equal to the
-     * number of vertices.  If the graph has no vertices, the array has length
-     * zero.
-     *
-     * (NOTE:  Do not return any internal data structure you use to represent
-     * vertices!  Return only the same objects that were provided by the
-     * calling application in calls to addVertex().)
-     *
-     * Running time:  O(|V|).
-     */
-    public Object[] getVertices(){
-        Object[] result = new Object[vertexCount];
-        try{
-            DListNode currentNode = (DListNode) verticesList.front();
-            for(int i = 0; i < verticesList.length(); i++){
-                result[i] = currentNode.item();
-                currentNode = (DListNode) currentNode.next();
-            }
-        } catch(InvalidNodeException error){}
-        return result;
-    }
-    
-    /**
-     * addVertex() adds a vertex (with no incident edges) to the graph.  The
-     * vertex's "name" is the object provided as the parameter "vertex".
-     * If this object is already a vertex of the graph, the graph is unchanged.
-     *
-     * Running time:  O(1).
-     */
-    public void addVertex(Object vertex){
-        if(verticesTable.find(vertex)==null){
-            
-            verticesTable.insert(vertex, vertex);// not sure what the value is
-            
-            verticesList.insertBack(vertex);
-            vertexCount++;
+public class HashTableChained implements Dictionary {
+
+  /**
+   *  Place any data fields here.
+   **/
+  private DList[] dataStore;
+  private int size;
+  private int hugePrime;
+
+
+
+  /** 
+   *  Construct a new empty hash table intended to hold roughly sizeEstimate
+   *  entries.  (The precise number of buckets is up to you, but we recommend
+   *  you use a prime number, and shoot for a load factor between 0.5 and 1.)
+   **/
+
+  public HashTableChained(int sizeEstimate) {
+    // Your solution here.
+    int temp = nearestPrime(sizeEstimate * 2);
+    this.dataStore = new DList[temp];
+    this.size = 0;
+    this.hugePrime = nearestPrime(sizeEstimate * 30);
+    makeEmpty();
+  }
+
+  /** 
+   *  Construct a new empty hash table with a default size.  Say, a prime in
+   *  the neighborhood of 100.
+   **/
+
+  public HashTableChained() {
+    // Your solution here.
+    this.dataStore = new DList[101];
+    this.size = 0;
+    this.hugePrime = nearestPrime(101 * 30);
+    makeEmpty();
+  }
+
+
+  /**
+   *  nearestPrime generates the prime nearest to n that
+   *  is less than or equal to n using the Sieve of Eratosthenes.
+   *  Do not expect reasonable output for n < 2
+   *  @param n is the number being passed to the method. n must be 2 or greater
+   **/
+  private int nearestPrime(int n){
+    try{ 
+      DList allPrimes = new DList();
+      for(int i = 2; i <= n; i++){
+        allPrimes.insertBack(i);
+      }
+      ListNode primeNode = allPrimes.front();
+      int i = 0;
+      while(i < allPrimes.length()){
+        i++;
+        int prime = ((Integer) primeNode.item()).intValue();
+        ListNode nextNode = primeNode.next();
+        int j = i;
+        while(j < allPrimes.length()){
+          int testNumber = ((Integer) nextNode.item()).intValue();
+          if(testNumber % prime == 0){
+            ListNode temp = nextNode;
+            nextNode = nextNode.next();
+            temp.remove();
+          } else{
+            nextNode = nextNode.next();
+            j++;
+          }
         }
-        
+        primeNode = primeNode.next();
+      }
+      return ((Integer) allPrimes.back().item()).intValue();
+    } catch(InvalidNodeException failure){
+      return -1;
     }
-    
-    /**
-     * removeVertex() removes a vertex from the graph.  All edges incident on the
-     * deleted vertex are removed as well.  If the parameter "vertex" does not
-     * represent a vertex of the graph, the graph is unchanged.
-     *
-     * Running time:  O(d), where d is the degree of "vertex".
-     */
-    public void removeVertex(Object vertex);
-    
-    /**
-     * isVertex() returns true if the parameter "vertex" represents a vertex of
-     * the graph.
-     *
-     * Running time:  O(1).
-     */
-    public boolean isVertex(Object vertex){
-        return verticesTable.find(vertex)!=null;
+  }
+
+  /**
+   *  Converts a hash code in the range Integer.MIN_VALUE...Integer.MAX_VALUE
+   *  to a value in the range 0...(size of hash table) - 1.
+   *
+   *  This function should have package protection (so we can test it), and
+   *  should be used by insert, find, and remove.
+   **/
+
+  int compFunction(int code) {
+    // Replace the following line with your solution.
+    return positiveMod(positiveMod(37 * code + 5, hugePrime), dataStore.length);
+  }
+
+  /**
+   * positiveMod returns a positive mod value for x % y
+  **/
+  private int positiveMod(int x, int y){
+    int possibleSolution = x % y;
+    if(possibleSolution >= 0){
+      return possibleSolution;
+    } else{
+      return possibleSolution + y;
     }
-    
-    /**
-     * degree() returns the degree of a vertex.  Self-edges add only one to the
-     * degree of a vertex.  If the parameter "vertex" doesn't represent a vertex
-     * of the graph, zero is returned.
-     *
-     * Running time:  O(1).
-     */
-    public int degree(Object vertex){
-        if(verticesTable.find(vertex)!=null){
-            return verticesTable.find(vertex).value(); // .number of edges
-        }else{
-            return 0;
+  }
+
+  /** 
+   *  Returns the number of entries stored in the dictionary.  Entries with
+   *  the same key (or even the same key and value) each still count as
+   *  a separate entry.
+   *  @return number of entries in the dictionary.
+   **/
+
+  public int size() {
+    // Replace the following line with your solution.
+    return this.size;
+  }
+
+  /** 
+   *  Tests if the dictionary is empty.
+   *
+   *  @return true if the dictionary has no entries; false otherwise.
+   **/
+
+  public boolean isEmpty() {
+    // Replace the following line with your solution.
+    return size == 0;
+  }
+
+  /**
+   *  Create a new Entry object referencing the input key and associated value,
+   *  and insert the entry into the dictionary.  Return a reference to the new
+   *  entry.  Multiple entries with the same key (or even the same key and
+   *  value) can coexist in the dictionary.
+   *
+   *  This method should run in O(1) time if the number of collisions is small.
+   *
+   *  @param key the key by which the entry can be retrieved.
+   *  @param value an arbitrary object.
+   *  @return an entry containing the key and value.
+   **/
+
+  public Entry insert(Object key, Object value) {
+    // Replace the following line with your solution.
+
+    // determine whether the table needs to be resized
+    if(size >= dataStore.length){
+      try{
+        DList[] temporary = new DList[nearestPrime(dataStore.length * 2)];
+        int newHugePrime = nearestPrime(30 * 2 * dataStore.length);
+        for(int j = 0; j < temporary.length; j++){
+          temporary[j] = new DList();
         }
-        
+
+        for(int i = 0; i < dataStore.length; i++){
+          DListNode currentNode = (DListNode) dataStore[i].front();
+          for(int j = 0; j < dataStore[i].length(); j++){
+            // put entry in new location
+            Object currentKey = ((Entry) currentNode.item()).key();
+            int targetIndex = positiveMod(positiveMod(37 * key.hashCode() + 5, newHugePrime), temporary.length);
+            temporary[targetIndex].insertBack(currentNode.item());
+            currentNode = (DListNode) currentNode.next();
+          }
+        }
+        dataStore = temporary;
+        hugePrime = newHugePrime;
+      } catch(InvalidNodeException error){}
     }
-    
-    /**
-     * getNeighbors() returns a new Neighbors object referencing two arrays.  The
-     * Neighbors.neighborList array contains each object that is connected to the
-     * input object by an edge.  The Neighbors.weightList array contains the
-     * weights of the corresponding edges.  The length of both arrays is equal to
-     * the number of edges incident on the input vertex.  If the vertex has
-     * degree zero, or if the parameter "vertex" does not represent a vertex of
-     * the graph, null is returned (instead of a Neighbors object).
-     *
-     * The returned Neighbors object, and the two arrays, are both newly created.
-     * No previously existing Neighbors object or array is changed.
-     *
-     * (NOTE:  In the neighborList array, do not return any internal data
-     * structure you use to represent vertices!  Return only the same objects
-     * that were provided by the calling application in calls to addVertex().)
-     *
-     * Running time:  O(d), where d is the degree of "vertex".
-     */
-    public Neighbors getNeighbors(Object vertex);
-    
-    /**
-     * addEdge() adds an edge (u, v) to the graph.  If either of the parameters
-     * u and v does not represent a vertex of the graph, the graph is unchanged.
-     * The edge is assigned a weight of "weight".  If the edge is already
-     * contained in the graph, the weight is updated to reflect the new value.
-     * Self-edges (where u == v) are allowed.
-     *
-     * Running time:  O(1).
-     */
-    public void addEdge(Object u, Object v, int weight){
-        
-        
+    Entry hashEntry = new Entry();
+    hashEntry.key = key;
+    hashEntry.value = value;
+
+    int targetIndex = compFunction(key.hashCode());
+    dataStore[targetIndex].insertBack(hashEntry);
+    size++;
+    return hashEntry;
+  }
+
+
+  /** 
+   *  Search for an entry with the specified key.  If such an entry is found,
+   *  return it; otherwise return null.  If several entries have the specified
+   *  key, choose one arbitrarily and return it.
+   *
+   *  This method should run in O(1) time if the number of collisions is small.
+   *
+   *  @param key the search key.
+   *  @return an entry containing the key and an associated value, or null if
+   *          no entry contains the specified key.
+   **/
+
+  public Entry find(Object key) {
+    // Replace the following line with your solution.
+    int targetIndex = compFunction(key.hashCode());
+    DList searchBucket = dataStore[targetIndex];
+    if(searchBucket.length() == 0){
+      return null;
     }
-    
-    /**
-     * removeEdge() removes an edge (u, v) from the graph.  If either of the
-     * parameters u and v does not represent a vertex of the graph, the graph
-     * is unchanged.  If (u, v) is not an edge of the graph, the graph is
-     * unchanged.
-     *
-     * Running time:  O(1).
-     */
-    public void removeEdge(Object u, Object v);
-    
-    /**
-     * isEdge() returns true if (u, v) is an edge of the graph.  Returns false
-     * if (u, v) is not an edge (including the case where either of the
-     * parameters u and v does not represent a vertex of the graph).
-     *
-     * Running time:  O(1).
-     */
-    public boolean isEdge(Object u, Object v);
-    
-    /**
-     * weight() returns the weight of (u, v).  Returns zero if (u, v) is not
-     * an edge (including the case where either of the parameters u and v does
-     * not represent a vertex of the graph).
-     *
-     * (NOTE:  A well-behaved application should try to avoid calling this
-     * method for an edge that is not in the graph, and should certainly not
-     * treat the result as if it actually represents an edge with weight zero.
-     * However, some sort of default response is necessary for missing edges,
-     * so we return zero.  An exception would be more appropriate, but
-     * also more annoying.)
-     *
-     * Running time:  O(1).
-     */
-    public int weight(Object u, Object v);
-    
+    try{
+      DListNode potentialNode = (DListNode) searchBucket.front();
+      int i = 0;
+      while(i < searchBucket.length()){
+        if(((Entry)potentialNode.item()).key.equals(key)){
+          return ((Entry)potentialNode.item());
+        }
+        potentialNode = (DListNode) potentialNode.next();
+        i++;
+      }
+      return null;
+    } catch(InvalidNodeException failure){
+      return null;
+    }
+  }
+
+  /** 
+   *  Remove an entry with the specified key.  If such an entry is found,
+   *  remove it from the table and return it; otherwise return null.
+   *  If several entries have the specified key, choose one arbitrarily, then
+   *  remove and return it.
+   *
+   *  This method should run in O(1) time if the number of collisions is small.
+   *
+   *  @param key the search key.
+   *  @return an entry containing the key and an associated value, or null if
+   *          no entry contains the specified key.
+   */
+
+  public Entry remove(Object key) {
+    // Replace the following line with your solution.
+    int targetIndex = compFunction(key.hashCode());
+    DList searchBucket = dataStore[targetIndex];
+    if(searchBucket.length() == 0){
+      return null;
+    }
+    try{
+      DListNode potentialNode = (DListNode) searchBucket.front();
+      int i = 0;
+      while(i < searchBucket.length()){
+        if(((Entry)potentialNode.item()).key.equals(key)){
+          Entry tempEntry = (Entry)potentialNode.item();
+          potentialNode.remove();
+          size--;
+          return tempEntry;
+        }
+        potentialNode = (DListNode) potentialNode.next();
+        i++;
+      }
+      return null;
+    } catch(InvalidNodeException error){
+      return null;
+    }
+  }
+
+  /**
+   *  Remove all entries from the dictionary.
+   */
+  public void makeEmpty() {
+    // Your solution here.
+    for(int i = 0; i < dataStore.length; i++){
+      dataStore[i] = new DList();
+    }
+    size = 0;
+  }
+
 }

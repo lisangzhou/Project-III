@@ -79,9 +79,7 @@ public class WUGraph {
    *
    * Running time:  O(1).
    */
-    public void addVertex(Object vertex){
-    
-    }
+  public void addVertex(Object vertex);
 
   /**
    * removeVertex() removes a vertex from the graph.  All edges incident on the
@@ -98,9 +96,7 @@ public class WUGraph {
    *
    * Running time:  O(1).
    */
-    public boolean isVertex(Object vertex){
-        
-    }
+  public boolean isVertex(Object vertex);
 
   /**
    * degree() returns the degree of a vertex.  Self-edges add only one to the
