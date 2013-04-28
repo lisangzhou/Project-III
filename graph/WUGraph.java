@@ -8,27 +8,42 @@ package graph;
  */
 
 public class WUGraph {
+  
+    HashTable verticesTable; 
+    DList verticesList;
+    HashTable edges;
+    int vertexCount;
+    int edgeCount;
 
   /**
    * WUGraph() constructs a graph having no vertices or edges.
    *
    * Running time:  O(1).
    */
-  public WUGraph();
+  public WUGraph(){
+    verticesTable=new HashTable();
+    verticesList=new DList();
+    edgeCount=0;
+    vertexCount=0;
+  }
 
   /**
    * vertexCount() returns the number of vertices in the graph.
    *
    * Running time:  O(1).
    */
-  public int vertexCount();
+  public int vertexCount(){
+      return vertexCount;
+  }
 
   /**
    * edgeCount() returns the number of edges in the graph.
    *
    * Running time:  O(1).
    */
-  public int edgeCount();
+  public int edgeCount(){
+    return edgeCount;
+  }
 
   /**
    * getVertices() returns an array containing all the objects that serve
