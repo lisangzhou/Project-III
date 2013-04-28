@@ -40,13 +40,12 @@ public class Kruskal {
     }
 
     quickSort(allEdges, 0, allEdges.length() - 1);
-    
     for(KruskalEdge edge : allEdges){
       Object first = edge.firstVertex();
       Object second = edge.secondVertex();
       int firstRoot = vertexSet.find(vertexMap.find(first).value().intValue());
       int secondRoot = vertexSet.find(vertexMap.find(second).value().intValue());
-      if(firstRoot == -1 || secondRoot == -1 || firstRoot != secondRoot){
+      if(!first.equals(second) && (firstRoot == -1 || secondRoot == -1 || firstRoot != secondRoot)){
         minSpanningGraph.addEdge(first,second,edge.weight());
         vertexSet.union(firstRoot,secondRoot);
       }
@@ -60,7 +59,7 @@ public class Kruskal {
     @param low is the lower index bound of the array being sorted. Inclusive
     @param high is the upper index bound of the array being sorted. Inclusive
   **/
-  private void quickSort(Comparable[] array, int low, int high){
+  private static void quickSort(Comparable[] array, int low, int high){
     if(high - low > 1){
       int pivotIndex = randomNumber(low,high);
       Comparable pivot = array[pivotIndex];
