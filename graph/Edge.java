@@ -1,3 +1,4 @@
+import list.*;
 public class Edge{
 
   DListNode firstAdjacencyNode;
