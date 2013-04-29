@@ -115,14 +115,17 @@ public class WUGraph {
    *
    * Running time:  O(1).
    */
-  public int degree(Object vertex){
+  
+   public int degree(Object vertex){
 	  if(adjacencyList.find(vertex)!=null){
-		  return adjacencyList.find(vertex).value(); // .number of edges
+		  return ((Vertex)adjacencyList.find(vertex).value()).edge().length(); 
 	  }else{
 		  return 0;
 	  }
 	  
   }
+	  
+  
 
   /**
    * getNeighbors() returns a new Neighbors object referencing two arrays.  The
