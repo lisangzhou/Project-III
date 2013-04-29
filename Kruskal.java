@@ -12,8 +12,6 @@ import java.util.Random;
 
 public class Kruskal {
 
-  Random random;
-
   /**
    * minSpanTree() returns a WUGraph that represents the minimum spanning tree
    * of the WUGraph g.  The original WUGraph g is NOT changed.
@@ -66,18 +64,18 @@ public class Kruskal {
       array[pivotIndex] = array[high];
       array[high] = pivot;
 
-      int i = low - 1
+      int i = low - 1;
       int j = high;
       do{
-        do{i++} while(array[i].compareTo(pivot) < 0);
-        do{j--} while(array[j].compareTo(pivot) > 0);
+        do{i++; } while(array[i].compareTo(pivot) < 0);
+        do{j--; } while(array[j].compareTo(pivot) > 0);
 
         if(i < j){
           Comparable ith = array[i];
           array[i] = array[j];
           array[j] = ith;
-        } while(i < j);
-      }
+        }
+      } while(i < j);
       
       array[high] = array[i];
       array[i] = pivot;
@@ -93,10 +91,9 @@ public class Kruskal {
     @param high is the upper bound for random number generation. The random number generated is an integer less than or equal to this upper bound. high must be greater than
       low, otherwise behavior may be unexpected.
   **/
-  private int randomNumber(int low, int high){
-    if(random == null){
-      random = new Random();
-    }
+  private static int randomNumber(int low, int high){
+    Random random = new Random();
+
     int r = random.nextInt();
     int randomValue = r % (high - low + 1);
     if(randomValue < 0){

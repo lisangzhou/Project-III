@@ -22,24 +22,17 @@ public class KruskalEdge implements Comparable{
     return weight;
   }
 
-  /*
-  public boolean equals(Object o){
+  public int compareTo(Object o){
     if(o instanceof KruskalEdge){
-      boolean firstCheck = firstVertex.equals(((KruskalEdge) o).firstVertex()) && secondVertex.equals(((KruskalEdge) o).secondVertex()) && weight == (((KruskalEdge) o).weight();
-      boolean secondCheck = firstVertex.equals(((KruskalEdge) o).secondVertex()) && secondVertex.equals(((KruskalEdge) o).firstVertex()) && weight == (((KruskalEdge) o).weight();
-      return firstCheck || secondCheck;
+      if(weight < ((KruskalEdge) o).weight()){
+        return -1;
+      } else if(weight == ((KruskalEdge) o).weight()){
+        return 0;
+      } else{
+        return 1;
+      }
     } else{
-      return false;
-    }
-  }
-  */
-  public int compareTo(KruskalEdge o){
-    if(weight < o.weight()){
-      return -1;
-    } else if(weight == o.weight()){
       return 0;
-    } else{
-      return 1;
     }
   }
 }
