@@ -81,10 +81,9 @@ public class WUGraph {
    */
   public void addVertex(Object vertex){
       if(adjacencyList.find(vertex)==null){
-		  
-		  adjacencyList.insert(vertex, vertex);// not sure what the value is 
-		  
-		  verticesList.insertBack(vertex);
+		  Vertex temp=new Vertex(vertex);
+		  adjacencyList.insert(vertex, temp);// not sure what the value is
+		  verticesList.insertBack(temp);
 		  vertexCount++;
 	  }
 	  
