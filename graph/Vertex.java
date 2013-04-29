@@ -6,7 +6,7 @@ public class Vertex{
     private DList edge;
 
   
-  public Edge(int item)){
+  public Vertex(int item){
       this.item=item;
       edge=new DList();
   }
@@ -15,7 +15,7 @@ public class Vertex{
         return this.item;
     }
     
-    public int edge(){
-        return this.edge;
+    public DList edge(){
+        return edge;
     }
 }  
