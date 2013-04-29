@@ -154,18 +154,30 @@ public class WUGraph {
      * Running time:  O(1).
      */
     public void addEdge(Object u, Object v, int weight){
-        if(adjacencyList.find(v)==null || adjacencyList.find(u)==null){
-            VertexPair edge_uv=new VertexPair(u,v);
-            if(edges.find(edge_uv)!=null){
-                ((Edge)(edges.find(edge_uv).value())).weight=weight;
-                // check is there is a mirror image of the same edge
-                if(edges.find(new VertexPair(v,u))!=null){
-                    
+        if(adjacencyList.find(v)!=null && adjacencyList.find(u)!=null){
+            VertexPair uvEdge=new VertexPair(u,v);
+            if(edges.find(uvEdge)!=null){
+                ((Edge)(edges.find(uvEdge).value())).weightChange(weight);
+                if( ((Edge)(edges.find(uvEdge).value())).partner()!=null){
+                    ((Edge)(edges.find(uvEdge).value())).partner().weightChange(weight);
                 }
-        	  	
             }else{
-                
-                
+            	Vertex origin=(Vertex)adjacencyList.find(u).value();
+            	Vertex destination=(Vertex)adjacencyList.find(v).value();
+            	
+            	//might run into problems; not feeling sexy
+            	
+            	Edge phantomEdge=new Edge(origin, destination, weight);
+                edges.insert(uvEdge,phantomEdge);
+                edgeCount++;
+                // special case if u.equals(v)
+                if(u.equals(v)){
+                	Vertex originPartner=destination;
+                	Vertex destinationPartner=origin;
+                	Edge phantomEdgePartner=new Edge(originPartner, destinationPartner,weight);
+                    phantomEdge.setPartner(phantomEdgePartner);
+                    phantomEdgePartner.setPartner(phantomEdge);
+                }
             }
             
         }// end first if
