@@ -11,189 +11,199 @@ import dict.*;
  */
 
 public class WUGraph {
-  
-    HashTableChained adjacencyList; 
+    
+    HashTableChained adjacencyList;
     DList verticesList;
     HashTableChained edges;
     int vertexCount;
     int edgeCount;
-
-  /**
-   * WUGraph() constructs a graph having no vertices or edges.
-   *
-   * Running time:  O(1).
-   */
-  public WUGraph(){
-    adjacencyList=new HashTableChained();
-    verticesList=new DList();
-    edgeCount = 0;
-    vertexCount = 0;
-  }
-
-  /**
-   * vertexCount() returns the number of vertices in the graph.
-   *
-   * Running time:  O(1).
-   */
-  public int vertexCount(){
-      return vertexCount;
-  }
-
-  /**
-   * edgeCount() returns the number of edges in the graph.
-   *
-   * Running time:  O(1).
-   */
-  public int edgeCount(){
-    return edgeCount;
-  }
-
-  /**
-   * getVertices() returns an array containing all the objects that serve
-   * as vertices of the graph.  The array's length is exactly equal to the
-   * number of vertices.  If the graph has no vertices, the array has length
-   * zero.
-   *
-   * (NOTE:  Do not return any internal data structure you use to represent
-   * vertices!  Return only the same objects that were provided by the
-   * calling application in calls to addVertex().)
-   *
-   * Running time:  O(|V|).
-   */
-  public Object[] getVertices(){
-    Object[] result = new Object[vertexCount];
-    try{
-      DListNode currentNode = (DListNode) verticesList.front();
-      for(int i = 0; i < verticesList.length(); i++){
-        result[i] = currentNode.item();
-        currentNode = (DListNode) currentNode.next();
-      }
-    } catch(InvalidNodeException error){}
-    return result;
-  }
-
-  /**
-   * addVertex() adds a vertex (with no incident edges) to the graph.  The
-   * vertex's "name" is the object provided as the parameter "vertex".
-   * If this object is already a vertex of the graph, the graph is unchanged.
-   *
-   * Running time:  O(1).
-   */
-  public void addVertex(Object vertex){
-      if(adjacencyList.find(vertex)==null){
-		  Vertex temp=new Vertex(vertex);
-		  adjacencyList.insert(vertex, temp);// not sure what the value is
-		  verticesList.insertBack(temp);
-		  vertexCount++;
-	  }
-	  
-  }
-
-  /**
-   * removeVertex() removes a vertex from the graph.  All edges incident on the
-   * deleted vertex are removed as well.  If the parameter "vertex" does not
-   * represent a vertex of the graph, the graph is unchanged.
-   *
-   * Running time:  O(d), where d is the degree of "vertex".
-   */
-  public void removeVertex(Object vertex);
-
-  /**
-   * isVertex() returns true if the parameter "vertex" represents a vertex of
-   * the graph.
-   *
-   * Running time:  O(1).
-   */
-  public boolean isVertex(Object vertex){
-	  return adjacencyList.find(vertex)!=null;
-  }
-
-  /**
-   * degree() returns the degree of a vertex.  Self-edges add only one to the
-   * degree of a vertex.  If the parameter "vertex" doesn't represent a vertex
-   * of the graph, zero is returned.
-   *
-   * Running time:  O(1).
-   */
-  
-   public int degree(Object vertex){
-	  if(adjacencyList.find(vertex)!=null){
-		  return ((Vertex)adjacencyList.find(vertex).value()).edge().length(); 
-	  }else{
-		  return 0;
-	  }
-	  
-  }
-	  
-  
-
-  /**
-   * getNeighbors() returns a new Neighbors object referencing two arrays.  The
-   * Neighbors.neighborList array contains each object that is connected to the
-   * input object by an edge.  The Neighbors.weightList array contains the
-   * weights of the corresponding edges.  The length of both arrays is equal to
-   * the number of edges incident on the input vertex.  If the vertex has
-   * degree zero, or if the parameter "vertex" does not represent a vertex of
-   * the graph, null is returned (instead of a Neighbors object).
-   *
-   * The returned Neighbors object, and the two arrays, are both newly created.
-   * No previously existing Neighbors object or array is changed.
-   *
-   * (NOTE:  In the neighborList array, do not return any internal data
-   * structure you use to represent vertices!  Return only the same objects
-   * that were provided by the calling application in calls to addVertex().)
-   *
-   * Running time:  O(d), where d is the degree of "vertex".
-   */
-  public Neighbors getNeighbors(Object vertex);
-
-  /**
-   * addEdge() adds an edge (u, v) to the graph.  If either of the parameters
-   * u and v does not represent a vertex of the graph, the graph is unchanged.
-   * The edge is assigned a weight of "weight".  If the edge is already
-   * contained in the graph, the weight is updated to reflect the new value.
-   * Self-edges (where u == v) are allowed.
-   *
-   * Running time:  O(1).
-   */
-  public void addEdge(Object u, Object v, int weight){
-	  
-	  
-  }
-
-  /**
-   * removeEdge() removes an edge (u, v) from the graph.  If either of the
-   * parameters u and v does not represent a vertex of the graph, the graph
-   * is unchanged.  If (u, v) is not an edge of the graph, the graph is
-   * unchanged.
-   *
-   * Running time:  O(1).
-   */
-  public void removeEdge(Object u, Object v);
-
-  /**
-   * isEdge() returns true if (u, v) is an edge of the graph.  Returns false
-   * if (u, v) is not an edge (including the case where either of the
-   * parameters u and v does not represent a vertex of the graph).
-   *
-   * Running time:  O(1).
-   */
-  public boolean isEdge(Object u, Object v);
-
-  /**
-   * weight() returns the weight of (u, v).  Returns zero if (u, v) is not
-   * an edge (including the case where either of the parameters u and v does
-   * not represent a vertex of the graph).
-   *
-   * (NOTE:  A well-behaved application should try to avoid calling this
-   * method for an edge that is not in the graph, and should certainly not
-   * treat the result as if it actually represents an edge with weight zero.
-   * However, some sort of default response is necessary for missing edges,
-   * so we return zero.  An exception would be more appropriate, but
-   * also more annoying.)
-   *
-   * Running time:  O(1).
-   */
-  public int weight(Object u, Object v);
-
+    
+    /**
+     * WUGraph() constructs a graph having no vertices or edges.
+     *
+     * Running time:  O(1).
+     */
+    public WUGraph(){
+        adjacencyList=new HashTableChained();
+        verticesList=new DList();
+        edgeCount = 0;
+        vertexCount = 0;
+    }
+    
+    /**
+     * vertexCount() returns the number of vertices in the graph.
+     *
+     * Running time:  O(1).
+     */
+    public int vertexCount(){
+        return vertexCount;
+    }
+    
+    /**
+     * edgeCount() returns the number of edges in the graph.
+     *
+     * Running time:  O(1).
+     */
+    public int edgeCount(){
+        return edgeCount;
+    }
+    
+    /**
+     * getVertices() returns an array containing all the objects that serve
+     * as vertices of the graph.  The array's length is exactly equal to the
+     * number of vertices.  If the graph has no vertices, the array has length
+     * zero.
+     *
+     * (NOTE:  Do not return any internal data structure you use to represent
+     * vertices!  Return only the same objects that were provided by the
+     * calling application in calls to addVertex().)
+     *
+     * Running time:  O(|V|).
+     */
+    public Object[] getVertices(){
+        Object[] result = new Object[vertexCount];
+        try{
+            DListNode currentNode = (DListNode) verticesList.front();
+            for(int i = 0; i < verticesList.length(); i++){
+                result[i] = currentNode.item();
+                currentNode = (DListNode) currentNode.next();
+            }
+        } catch(InvalidNodeException error){}
+        return result;
+    }
+    
+    /**
+     * addVertex() adds a vertex (with no incident edges) to the graph.  The
+     * vertex's "name" is the object provided as the parameter "vertex".
+     * If this object is already a vertex of the graph, the graph is unchanged.
+     *
+     * Running time:  O(1).
+     */
+    public void addVertex(Object vertex){
+        if(adjacencyList.find(vertex)==null){
+            Vertex temp=new Vertex(vertex);
+            adjacencyList.insert(vertex, temp);// not sure what the value is
+            verticesList.insertBack(temp);
+            vertexCount++;
+        }
+        
+    }
+    
+    /**
+     * removeVertex() removes a vertex from the graph.  All edges incident on the
+     * deleted vertex are removed as well.  If the parameter "vertex" does not
+     * represent a vertex of the graph, the graph is unchanged.
+     *
+     * Running time:  O(d), where d is the degree of "vertex".
+     */
+    public void removeVertex(Object vertex);
+    
+    /**
+     * isVertex() returns true if the parameter "vertex" represents a vertex of
+     * the graph.
+     *
+     * Running time:  O(1).
+     */
+    public boolean isVertex(Object vertex){
+        return adjacencyList.find(vertex)!=null;
+    }
+    
+    /**
+     * degree() returns the degree of a vertex.  Self-edges add only one to the
+     * degree of a vertex.  If the parameter "vertex" doesn't represent a vertex
+     * of the graph, zero is returned.
+     *
+     * Running time:  O(1).
+     */
+    public int degree(Object vertex){
+        if(adjacencyList.find(vertex)!=null){
+            return ((Vertex)adjacencyList.find(vertex).value()).edge().length();
+        }else{
+            return 0;
+        }
+        
+    }
+    
+    /**
+     * getNeighbors() returns a new Neighbors object referencing two arrays.  The
+     * Neighbors.neighborList array contains each object that is connected to the
+     * input object by an edge.  The Neighbors.weightList array contains the
+     * weights of the corresponding edges.  The length of both arrays is equal to
+     * the number of edges incident on the input vertex.  If the vertex has
+     * degree zero, or if the parameter "vertex" does not represent a vertex of
+     * the graph, null is returned (instead of a Neighbors object).
+     *
+     * The returned Neighbors object, and the two arrays, are both newly created.
+     * No previously existing Neighbors object or array is changed.
+     *
+     * (NOTE:  In the neighborList array, do not return any internal data
+     * structure you use to represent vertices!  Return only the same objects
+     * that were provided by the calling application in calls to addVertex().)
+     *
+     * Running time:  O(d), where d is the degree of "vertex".
+     */
+    public Neighbors getNeighbors(Object vertex);
+    
+    /**
+     * addEdge() adds an edge (u, v) to the graph.  If either of the parameters
+     * u and v does not represent a vertex of the graph, the graph is unchanged.
+     * The edge is assigned a weight of "weight".  If the edge is already
+     * contained in the graph, the weight is updated to reflect the new value.
+     * Self-edges (where u == v) are allowed.
+     *
+     * Running time:  O(1).
+     */
+    public void addEdge(Object u, Object v, int weight){
+        if(adjacencyList.find(v)==null || adjacencyList.find(u)==null){
+            VertexPair edge_uv=new VertexPair(u,v);
+            if(edges.find(edge_uv)!=null){
+                ((Edge)(edges.find(edge_uv).value())).weight=weight;
+                // check is there is a mirror image of the same edge
+                if(edges.find(new VertexPair(v,u))!=null){
+                    
+                }
+        	  	
+            }else{
+                
+                
+            }
+            
+        }// end first if
+    }
+    
+    /**
+     * removeEdge() removes an edge (u, v) from the graph.  If either of the
+     * parameters u and v does not represent a vertex of the graph, the graph
+     * is unchanged.  If (u, v) is not an edge of the graph, the graph is
+     * unchanged.
+     *
+     * Running time:  O(1).
+     */
+    public void removeEdge(Object u, Object v);
+    
+    /**
+     * isEdge() returns true if (u, v) is an edge of the graph.  Returns false
+     * if (u, v) is not an edge (including the case where either of the
+     * parameters u and v does not represent a vertex of the graph).
+     *
+     * Running time:  O(1).
+     */
+    public boolean isEdge(Object u, Object v);
+    
+    /**
+     * weight() returns the weight of (u, v).  Returns zero if (u, v) is not
+     * an edge (including the case where either of the parameters u and v does
+     * not represent a vertex of the graph).
+     *
+     * (NOTE:  A well-behaved application should try to avoid calling this
+     * method for an edge that is not in the graph, and should certainly not
+     * treat the result as if it actually represents an edge with weight zero.
+     * However, some sort of default response is necessary for missing edges,
+     * so we return zero.  An exception would be more appropriate, but
+     * also more annoying.)
+     *
+     * Running time:  O(1).
+     */
+    public int weight(Object u, Object v);
+    
 }
