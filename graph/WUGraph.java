@@ -11,7 +11,7 @@ import dict.*;
  */
 
 public class WUGraph {
-    int numVertices;
+	int numVertices;
 	int numEdges;
     HashTableChained vertexHashTable;
     DList vertices;
@@ -65,7 +65,7 @@ public class WUGraph {
         try{
             DListNode currentNode = (DListNode) vertices.front();
             for(int i = 0; i < vertices.length(); i++){
-                result[i] = currentNode.item();
+                result[i] = ((Vertex) currentNode.item()).getItem();
                 currentNode = (DListNode) currentNode.next();
             }
         } catch(InvalidNodeException error){}
@@ -80,13 +80,13 @@ public class WUGraph {
      * Running time:  O(1).
      */
     public void addVertex(Object vertex){
-        if(vertexHashTable.find(vertex)==null){
-            Vertex temp=new Vertex(vertex);
-            vertexHashTable.insert(vertex, temp);// not sure what the value is
-            vertices.insertBack(temp);
+        if(vertexHashTable.find(vertex) == null){
+            Vertex vertexToAdd = new Vertex(vertex);
+            vertices.insertBack(vertexToAdd);
+            vertexToAdd.setNode((DListNode) vertices.back());
+            vertexHashTable.insert(vertex, vertexToAdd);
             numVertices++;
-        }
-        
+        }   
     }
     
     /**
@@ -107,9 +107,9 @@ public class WUGraph {
     			while (n.isValidNode()) {
     				Edge e = ((Edge) n.item());
     				n = (DListNode) n.next();
-    				removeEdge(e.origin, e.destination);
+    				removeEdge(e.getOrigin(), e.getDestination());
     			}
-    			v.node.remove();
+    			v.getNode().remove();
     			vertexHashTable.remove(vertex);
     			numVertices--;
     		} catch(InvalidNodeException error){}
@@ -161,7 +161,33 @@ public class WUGraph {
      *
      * Running time:  O(d), where d is the degree of "vertex".
      */
-    public Neighbors getNeighbors(Object vertex);
+    public Neighbors getNeighbors(Object vertex) {
+    	int count = 0;
+    	Neighbors neighbors = new Neighbors();
+    	neighbors.neighborList = new Object[degree(vertex)];
+    	neighbors.weightList = new int[degree(vertex)];
+    	if (!isVertex(vertex)) {
+    		return null;
+    	}
+    	else {
+        	Vertex internal = (Vertex) vertexHashTable.find(vertex).value();
+        	if (internal.getAdjacentEdges().length() == 0) {
+        		return null;
+        	}
+        	DListNode n = (DListNode) internal.getAdjacentEdges().front();
+        	try {
+        		while (n.isValidNode())
+        		{
+        			neighbors.neighborList[count] = ((Edge) n.item()).getDestination().getItem();
+        			neighbors.weightList[count] = ((Edge) n.item()).getWeight();
+        			count++;
+        			n = (DListNode) n.next();
+        		}
+        	} catch(InvalidNodeException error){} 
+
+    	}
+    	return neighbors;
+    }
     
     /**
      * addEdge() adds an edge (u, v) to the graph.  If either of the parameters
@@ -173,33 +199,32 @@ public class WUGraph {
      * Running time:  O(1).
      */
     public void addEdge(Object u, Object v, int weight){
-        if(vertexHashTable.find(v)!=null && vertexHashTable.find(u)!=null){
-            VertexPair uvEdge=new VertexPair(u,v);
-            if(edges.find(uvEdge)!=null){
-                ((Edge)(edges.find(uvEdge).value())).setWeight(weight);
-                if( ((Edge)(edges.find(uvEdge).value())).getPartner()!=null){
-                    ((Edge)(edges.find(uvEdge).value())).getPartner().setWeight(weight);
-                }
-            }else{
-            	Vertex origin=(Vertex)vertexHashTable.find(u).value();
-            	Vertex destination=(Vertex)vertexHashTable.find(v).value();
-            	
-            	//might run into problems; not feeling sexy
-            	
-            	Edge phantomEdge=new Edge(origin, destination, weight);
-                edges.insert(uvEdge,phantomEdge);
-                numEdges++;
-                // special case if u.equals(v)
-                if(u.equals(v)){
-                	Vertex originPartner=destination;
-                	Vertex destinationPartner=origin;
-                	Edge phantomEdgePartner=new Edge(originPartner, destinationPartner,weight);
-                    phantomEdge.setPartner(phantomEdgePartner);
-                    phantomEdgePartner.setPartner(phantomEdge);
-                }
-            }
-            
-        }// end first if
+    	VertexPair vertexPair = new VertexPair(u,v);
+        if (!isVertex(u) || !isVertex(v)) {
+        	return;
+        }
+        else if (edges.find(vertexPair) != null) {
+        	Edge edgeToUpdate = (Edge) edges.find(vertexPair).value();
+        	edgeToUpdate.setWeight(weight);    
+        	if (edgeToUpdate.getPartner() != null)
+        		edgeToUpdate.getPartner().setWeight(weight);
+        }
+        else {
+        	Vertex origin = (Vertex) vertexHashTable.find(u).value();
+        	Vertex destination = (Vertex) vertexHashTable.find(v).value();
+        	Edge edgeToAdd = new Edge(origin, destination, weight);
+        	origin.getAdjacentEdges().insertBack(edgeToAdd);
+        	if (!u.equals(v)) {
+        		Edge partnerToAdd = new Edge(destination, origin, weight);
+        		edgeToAdd.setPartner(partnerToAdd);
+        		partnerToAdd.setPartner(edgeToAdd);
+        		destination.getAdjacentEdges().insertBack(partnerToAdd);
+        		partnerToAdd.edgeNode = (DListNode) destination.getAdjacentEdges().back();
+        	}
+        	edgeToAdd.edgeNode = (DListNode) origin.getAdjacentEdges().back(); 	
+        	edges.insert(vertexPair,edgeToAdd);
+            numEdges++;
+        }
     }
     
     /**
@@ -215,10 +240,18 @@ public class WUGraph {
     		return;
     	}
     	else {
-    		Entry e = edges.find(new VertexPair(u,v));
-    		((Vertex) vertexHashTable.find(u).value()).getAdjacentEdges();
-    		edges.remove(e);
-    		numEdges--;
+    		try {
+    			Entry e = edges.find(new VertexPair(u,v));
+        		Edge remove = (Edge) e.value();
+        		if (remove.getPartner() != null) {
+            		Edge removePartner = remove.getPartner();
+            		removePartner.edgeNode.remove();
+        		}
+        		remove.edgeNode.remove();
+        		edges.remove(new VertexPair(u,v));
+        		numEdges--;
+    		}  catch(InvalidNodeException error){}
+    		
     	}
     	
     }
