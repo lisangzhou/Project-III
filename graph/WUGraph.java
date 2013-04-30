@@ -97,6 +97,7 @@ public class WUGraph {
      * Running time:  O(d), where d is the degree of "vertex".
      */
     public void removeVertex(Object vertex) {
+
     	if (!isVertex(vertex)) {
     		return;
     	} else {
@@ -107,14 +108,14 @@ public class WUGraph {
     			while (n.isValidNode()) {
     				Edge e = ((Edge) n.item());
     				n = (DListNode) n.next();
-    				removeEdge(e.getOrigin(), e.getDestination());
+    				removeEdge(e.getOrigin().getItem(), e.getDestination().getItem());
     			}
     			v.getNode().remove();
     			vertexHashTable.remove(vertex);
     			numVertices--;
     		} catch(InvalidNodeException error){}
     	}
-    	
+
     }
     
     /**
@@ -236,6 +237,7 @@ public class WUGraph {
      * Running time:  O(1).
      */
     public void removeEdge(Object u, Object v) {
+
     	if (!isEdge(u,v)) {
     		return;
     	}
