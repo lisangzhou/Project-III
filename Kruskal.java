@@ -21,7 +21,7 @@ public class Kruskal {
     KruskalEdge[] allEdges = new KruskalEdge[g.edgeCount() * 2];
     Object[] allVertices = g.getVertices();
     HashTableChained vertexMap = new HashTableChained(allVertices.length);
-    DisjointSet vertexSet = new DisjointSet(allVertices.length);
+    DisjointSets vertexSet = new DisjointSet(allVertices.length);
 
     // get all of the edges. also create a map for vertices to indices in the disjoint set
     int indexCounter = 0;
@@ -30,7 +30,7 @@ public class Kruskal {
 
       HashTableChained.insert(g,new Integer(j));
       
-      Neighbors allNeighbors = vertex.getNeighbors(vertex);
+      Neighbors allNeighbors = g.getNeighbors(vertex);
       for(int i = 0; i < allNeighbors.neighborList.length; i++){
         KruskalEdge[indexCounter] = new KruskalEdge(vertex,allNeighbors.neighborList[i],allNeighbors.weightList[i]);
         indexCounter++;
@@ -41,8 +41,8 @@ public class Kruskal {
     for(KruskalEdge edge : allEdges){
       Object first = edge.firstVertex();
       Object second = edge.secondVertex();
-      int firstRoot = vertexSet.find(vertexMap.find(first).value().intValue());
-      int secondRoot = vertexSet.find(vertexMap.find(second).value().intValue());
+      int firstRoot = vertexSet.find(((Integer) vertexMap.find(first).value()).intValue());
+      int secondRoot = vertexSet.find(((Integer) vertexMap.find(second).value()).intValue());
       if(!first.equals(second) && (firstRoot == -1 || secondRoot == -1 || firstRoot != secondRoot)){
         minSpanningGraph.addEdge(first,second,edge.weight());
         vertexSet.union(firstRoot,secondRoot);

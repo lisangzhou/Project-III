@@ -19,5 +19,13 @@ public class Vertex{
     public DList getAdjacentEdges(){
         return adjacentEdges;
     }
+
+  public void setNode(DListNode input){
+    this.node = input;
+  }
+
+  public DListNode getNode(){
+    return this.node;
+  }
     
 }  
