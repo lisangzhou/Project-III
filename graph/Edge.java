@@ -38,4 +38,12 @@ public class Edge{
     public DListNode getNodeReference() {
     	return edgeNode;
     }
+    
+    public Vertex getOrigin() {
+    	return origin;
+    }
+    
+    public Vertex getDestination() {
+    	return destination;
+    }
 }  
