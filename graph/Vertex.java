@@ -2,21 +2,22 @@ package graph;
 import list.*;
 
 public class Vertex{
+    private DList adjacentEdges;
     private Object item;
-    private DList edge;
+    protected DListNode node;
 
   
-  public Vertex(Object item){
-      this.item=item;
-      edge=new DList();
+  public Vertex (Object o){
+      item = o;
+      adjacentEdges=new DList();
   }
     
-    public Object item(){
-        return this.item;
+    public Object getItem(){
+        return item;
     }
     
-    public DList edge(){
-        return edge;
+    public DList getAdjacentEdges(){
+        return adjacentEdges;
     }
     
 }  
