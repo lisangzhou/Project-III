@@ -35,4 +35,8 @@ public class KruskalEdge implements Comparable{
       return 0;
     }
   }
+
+  public String toString(){
+    return firstVertex.toString() + "-" + weight + "->" + secondVertex.toString();
+  }
 }
