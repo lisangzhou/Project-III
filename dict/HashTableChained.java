@@ -100,10 +100,15 @@ public class HashTableChained implements Dictionary {
      *  should be used by insert, find, and remove.
      **/
     
-    int compFunction(int code) {
+    private int compFunction(int code) {
         // Replace the following line with your solution.
-        return positiveMod(positiveMod(37 * code + 5, hugePrime), dataStore.length);
+        return compFunction(code, dataStore.length);
     }
+
+    private int compFunction(int code, int compressionSize){
+        return positiveMod(positiveMod(37 * code + 5, hugePrime), compressionSize);
+    }
+
     
     /**
      * positiveMod returns a positive mod value for x % y
@@ -170,7 +175,7 @@ public class HashTableChained implements Dictionary {
                     for(int j = 0; j < dataStore[i].length(); j++){
                         // put entry in new location
                         Object currentKey = ((Entry) currentNode.item()).key();
-                        int targetIndex = positiveMod(positiveMod(37 * currentKey.hashCode() + 5, newHugePrime), temporary.length);
+                        int targetIndex = compFunction(currentKey.hashCode(), temporary.length);
                         temporary[targetIndex].insertBack(currentNode.item());
                         currentNode = (DListNode) currentNode.next();
                     }
