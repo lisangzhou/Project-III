@@ -102,13 +102,8 @@ public class HashTableChained implements Dictionary {
     
     private int compFunction(int code) {
         // Replace the following line with your solution.
-        return compFunction(code, dataStore.length);
+        return positiveMod(positiveMod(37 * code + 5, hugePrime), dataStore.length);
     }
-
-    private int compFunction(int code, int compressionSize){
-        return positiveMod(positiveMod(37 * code + 5, hugePrime), compressionSize);
-    }
-
     
     /**
      * positiveMod returns a positive mod value for x % y
@@ -164,24 +159,23 @@ public class HashTableChained implements Dictionary {
         // determine whether the table needs to be resized
         if(size >= dataStore.length){
             try{
-                DList[] temporary = new DList[nearestPrime(dataStore.length * 2)];
-                int newHugePrime = nearestPrime(30 * 2 * dataStore.length);
-                for(int j = 0; j < temporary.length; j++){
-                    temporary[j] = new DList();
+                DList[] temporaryStorage = dataStore;
+                dataStore = new DList[nearestPrime(dataStore.length * 2)];
+                hugePrime = nearestPrime(30 * 2 * dataStore.length);
+                for(int j = 0; j < dataStore.length; j++){
+                    dataStore[j] = new DList();
                 }
                 
-                for(int i = 0; i < dataStore.length; i++){
-                    DListNode currentNode = (DListNode) dataStore[i].front();
-                    for(int j = 0; j < dataStore[i].length(); j++){
+                for(int i = 0; i < temporaryStorage.length; i++){
+                    DListNode currentNode = (DListNode) temporaryStorage[i].front();
+                    for(int j = 0; j < temporaryStorage[i].length(); j++){
                         // put entry in new location
                         Object currentKey = ((Entry) currentNode.item()).key();
-                        int targetIndex = compFunction(currentKey.hashCode(), temporary.length);
-                        temporary[targetIndex].insertBack(currentNode.item());
+                        int targetIndex = compFunction(currentKey.hashCode());
+                        dataStore[targetIndex].insertBack(currentNode.item());
                         currentNode = (DListNode) currentNode.next();
                     }
                 }
-                dataStore = temporary;
-                hugePrime = newHugePrime;
             } catch(InvalidNodeException error){}
         }
         Entry hashEntry = new Entry();
