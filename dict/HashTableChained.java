@@ -170,7 +170,7 @@ public class HashTableChained implements Dictionary {
                     for(int j = 0; j < dataStore[i].length(); j++){
                         // put entry in new location
                         Object currentKey = ((Entry) currentNode.item()).key();
-                        int targetIndex = positiveMod(positiveMod(37 * key.hashCode() + 5, newHugePrime), temporary.length);
+                        int targetIndex = positiveMod(positiveMod(37 * currentKey.hashCode() + 5, newHugePrime), temporary.length);
                         temporary[targetIndex].insertBack(currentNode.item());
                         currentNode = (DListNode) currentNode.next();
                     }
@@ -274,5 +274,5 @@ public class HashTableChained implements Dictionary {
         }
         size = 0;
     }
-    
+
 }
