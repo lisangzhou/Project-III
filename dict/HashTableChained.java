@@ -2,6 +2,7 @@
 
 package dict;
 import list.*;
+import java.util.Random;
 /**
  *  HashTableChained implements a Dictionary as a hash table with chaining.
  *  All objects used as keys must have a valid hashCode() method, which is
@@ -162,9 +163,7 @@ public class HashTableChained implements Dictionary {
                 DList[] temporaryStorage = dataStore;
                 dataStore = new DList[nearestPrime(dataStore.length * 2)];
                 hugePrime = nearestPrime(30 * 2 * dataStore.length);
-                for(int j = 0; j < dataStore.length; j++){
-                    dataStore[j] = new DList();
-                }
+                makeEmpty();
                 
                 for(int i = 0; i < temporaryStorage.length; i++){
                     DListNode currentNode = (DListNode) temporaryStorage[i].front();
