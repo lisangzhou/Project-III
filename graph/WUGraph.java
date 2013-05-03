@@ -97,7 +97,6 @@ public class WUGraph {
      * Running time:  O(d), where d is the degree of "vertex".
      */
     public void removeVertex(Object vertex) {
-
     	if (!isVertex(vertex)) {
     		return;
     	} else {
@@ -177,8 +176,7 @@ public class WUGraph {
         	}
         	DListNode n = (DListNode) internal.getAdjacentEdges().front();
         	try {
-        		while (n.isValidNode())
-        		{
+        		while (n.isValidNode()){
         			neighbors.neighborList[count] = ((Edge) n.item()).getDestination().getItem();
         			neighbors.weightList[count] = ((Edge) n.item()).getWeight();
         			count++;
@@ -237,7 +235,6 @@ public class WUGraph {
      * Running time:  O(1).
      */
     public void removeEdge(Object u, Object v) {
-
     	if (!isEdge(u,v)) {
     		return;
     	}
@@ -252,10 +249,8 @@ public class WUGraph {
         		remove.edgeNode.remove();
         		edges.remove(new VertexPair(u,v));
         		numEdges--;
-    		}  catch(InvalidNodeException error){}
-    		
-    	}
-    	
+    		}  catch(InvalidNodeException error){}	
+    	}	
     }
     
     /**
@@ -294,6 +289,5 @@ public class WUGraph {
       	} else {
       		return ((Edge) e.value()).getWeight();
       	}
-    }
-    
+    }  
 }
