@@ -1,0 +1,9 @@
+Eric Wu, cs61b-gk
+Mukund Chillakanti, cs61b-vs
+Toby Zhou, cs61b-gl
+
+1. In order for removeVertex() to run in O(d) time, we used the first suggestion under design element [4] in the readme. We use two edges to represent (u,v), with one in each of the vertex’s adjacently lists. Each edge contains a reference to its node in the adjacency list as well as a reference to its partner edge. Thus, removeVertex() traverses through u’s adjacency list, and removes each edge by calling removeEdge() with the proper parameters. The method removeEdge() runs in O(1) time since after removing a half-edge, the partner edge can also be removed in constant time due to an edge’s partner reference. Thus, the entire method removeVertex runs in O(d) time.
+
+2. In order for getVertices() to run in O(|V|) time, we again follow the suggestion in the readme. We have a DList that contains our internal Vertex objects, each of which have a reference to the vertex object of the calling application. getVertices() just traverses through this DList of vertices, therefore running in O(|V|) time.
+
+The Kruskal class runs Kruskal's algorithm using mergesort on doubly-linked lists, which allows for Theta(E log(E)) sorting. Kruskal represents edges using objects of type KruskalEdge, which implements the Comparable interface for easy sorting.
