@@ -11,11 +11,11 @@ import dict.*;
  */
 
 public class WUGraph {
-	int numVertices;
-	int numEdges;
-    HashTableChained vertexHashTable;
-    DList vertices;
-    HashTableChained edges;
+    private int numVertices;
+    private int numEdges;
+    private HashTableChained vertexHashTable;
+    private DList vertices;
+    private HashTableChained edges;
    
     
     /**
