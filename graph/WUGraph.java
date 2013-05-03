@@ -60,15 +60,14 @@ public class WUGraph {
      * Running time:  O(|V|).
      */
     public Object[] getVertices(){
-    	
         Object[] result = new Object[numVertices];
         try{
             DListNode currentNode = (DListNode) vertices.front();
             for(int i = 0; i < vertices.length(); i++){
                 result[i] = ((Vertex) currentNode.item()).getItem();
                 currentNode = (DListNode) currentNode.next();
-            }
-        } catch(InvalidNodeException error){}
+                }
+           } catch(InvalidNodeException error){}
         return result;
     }
     
