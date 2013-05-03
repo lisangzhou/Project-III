@@ -204,8 +204,9 @@ public class WUGraph {
         else if (edges.find(vertexPair) != null) {
         	Edge edgeToUpdate = (Edge) edges.find(vertexPair).value();
         	edgeToUpdate.setWeight(weight);    
-        	if (edgeToUpdate.getPartner() != null)
+        	if (edgeToUpdate.getPartner() != null){
         		edgeToUpdate.getPartner().setWeight(weight);
+            }
         }
         else {
         	Vertex origin = (Vertex) vertexHashTable.find(u).value();
